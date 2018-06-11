@@ -91,14 +91,23 @@ class CPU {
 
     // !!! IMPLEMENT ME
     switch (IR) {
+      // HLT
       case 1:
         this.hlt();
         break;
+      // LDI
       case 153:
         this.ram.write(operandA, operandB);
         break;
+      // PRN
       case 67:
         console.log(this.ram.read(operandA));
+        break;
+      case 170:
+        this.ram.write(
+          operandA,
+          this.ram.read(operandA) * this.ram.read(operandB)
+        );
         break;
 
       default:
@@ -112,9 +121,7 @@ class CPU {
     // for any particular instruction.
 
     // !!! IMPLEMENT ME
-    let increment = IR.toString(2);
-    while (increment.length < 8) increment = "0" + increment;
-    this.PC = this.PC + 1 + parseInt(increment.slice(0, 2), 2);
+    this.PC += (IR >> 6) + 1;
   }
 }
 
