@@ -10,6 +10,10 @@ const HLT = 1;
 const PRN = 67;
 const LDI = 153;
 const MUL = 170;
+const ADD = 168;
+const DIV = 171;
+const INC = 120;
+const DEC = 121;
 class CPU {
   /**
    * Initialize the CPU
@@ -60,7 +64,26 @@ class CPU {
     switch (op) {
       case "MUL":
         // !!! IMPLEMENT ME
-        return this.ram.read(regA) * this.ram.read(regB);
+        // return this.ram.read(regA) * this.ram.read(regB);
+        return (this.reg[regA] = this.reg[regA] * this.reg[regB]);
+        break;
+      case "ADD":
+        // return this.ram.read(regA) + this.ram.read(regB);
+        return (this.reg[regA] = this.reg[regA] + this.reg[regB]);
+        break;
+      case "DIV":
+        if (this.reg[regB] === 0) {
+          console.log("No 0 divide");
+          process.exit(1);
+        }
+        // return this.ram.read(regA) / this.ram.read(regB);
+        return (this.reg[regA] = this.reg[regA] / this.reg[regB]);
+        break;
+      case "INC":
+        return (this.reg[regA] = this.reg[regA] + 1);
+        break;
+      case "DEC":
+        return (this.reg[regA] = this.reg[regA] - 1);
         break;
     }
   }
@@ -103,14 +126,26 @@ class CPU {
         break;
       // LDI
       case LDI:
-        this.ram.write(operandA, operandB);
+        this.reg[operandA] = operandB;
         break;
       // PRN
       case PRN:
-        console.log(this.ram.read(operandA));
+        console.log(this.reg[operandA]);
         break;
       case MUL:
-        this.ram.write(operandA, this.alu("MUL", operandA, operandB));
+        this.alu("MUL", operandA, operandB);
+        break;
+      case ADD:
+        this.alu("ADD", operandA, operandB);
+        break;
+      case DIV:
+        this.alu("DIV", operandA, operandB);
+        break;
+      case INC:
+        this.alu("INC", operandA, operandB);
+        break;
+      case DEC:
+        this.alu("DEC", operandA, operandB);
         break;
 
       default:
