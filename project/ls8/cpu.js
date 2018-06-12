@@ -5,6 +5,11 @@
 /**
  * Class for simulating a simple Computer (CPU & memory)
  */
+
+const HLT = 1;
+const PRN = 67;
+const LDI = 153;
+const MUL = 170;
 class CPU {
   /**
    * Initialize the CPU
@@ -55,6 +60,7 @@ class CPU {
     switch (op) {
       case "MUL":
         // !!! IMPLEMENT ME
+        return this.ram.read(regA) * this.ram.read(regB);
         break;
     }
   }
@@ -92,22 +98,19 @@ class CPU {
     // !!! IMPLEMENT ME
     switch (IR) {
       // HLT
-      case 1:
+      case HLT:
         this.hlt();
         break;
       // LDI
-      case 153:
+      case LDI:
         this.ram.write(operandA, operandB);
         break;
       // PRN
-      case 67:
+      case PRN:
         console.log(this.ram.read(operandA));
         break;
-      case 170:
-        this.ram.write(
-          operandA,
-          this.ram.read(operandA) * this.ram.read(operandB)
-        );
+      case MUL:
+        this.ram.write(operandA, this.alu("MUL", operandA, operandB));
         break;
 
       default:
