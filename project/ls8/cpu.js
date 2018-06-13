@@ -14,6 +14,10 @@ const ADD = 168;
 const DIV = 171;
 const INC = 120;
 const DEC = 121;
+const PUSH = 77;
+const POP = 76;
+
+const SP = 7;
 class CPU {
   /**
    * Initialize the CPU
@@ -22,6 +26,7 @@ class CPU {
     this.ram = ram;
 
     this.reg = new Array(8).fill(0); // General-purpose registers R0-R7
+    this.reg[SP] = 0xf4;
 
     // Special-purpose registers
     this.PC = 0; // Program Counter
@@ -133,7 +138,7 @@ class CPU {
         console.log(this.reg[operandA]);
         break;
       case MUL:
-        this.alu("MUL", operandA, operandB);
+        this.reg[operandA] = this.alu("MUL", operandA, operandB);
         break;
       case ADD:
         this.alu("ADD", operandA, operandB);
@@ -146,6 +151,14 @@ class CPU {
         break;
       case DEC:
         this.alu("DEC", operandA, operandB);
+        break;
+      case PUSH:
+        this.reg[SP]--;
+        this.ram.write(this.reg[SP], this.reg[operandA]);
+        break;
+      case POP:
+        this.reg[operandA] = this.ram.read(this.reg[SP]);
+        this.reg[SP]++;
         break;
 
       default:
